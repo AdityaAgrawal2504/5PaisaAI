@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %p %c{1.} [%t] %m%n</Property>
+        <Property name="APP_LOG_ROOT">./logs</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <RollingFile name="File"
+                     fileName="${APP_LOG_ROOT}/app.log"
+                     filePattern="${APP_LOG_ROOT}/app-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        
+        <!--
+        Example Abstracted Appender for Kafka. Requires kafka-log4j2-appender dependency.
+        This demonstrates the extensibility for external systems.
+        -->
+        <!--
+        <Kafka name="Kafka" topic="my-log-topic">
+            <PatternLayout pattern="%d %p %c{1.} [%t] %m%n" />
+            <Property name="bootstrap.servers">kafka-broker:9092</Property>
+        </Kafka>
+        -->
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+            <!-- <AppenderRef ref="Kafka"/> -->
+        </Root>
+        
+        <Logger name="com.example.fetchconversationsapi_v1" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+        </Logger>
+    </Loggers>
+</Configuration>
+```
+```properties
+# Spring Boot Application Properties
+# File: src/main/resources/application.properties
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=password
+spring.h2.console.enabled=true
+
+# For WebMvcTest to work with custom request DTOs
+spring.mvc.problemdetails.enabled=true
+
+# Springdoc/Swagger UI path
+springdoc.swagger-ui.path=/swagger-ui.html
+```
