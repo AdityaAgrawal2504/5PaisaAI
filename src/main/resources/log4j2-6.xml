@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] %c{1} - %msg%n</Property>
+        <Property name="FILE_PATH">logs</Property>
+        <Property name="FILE_NAME">offline-message-service</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <!-- Rolling File Appender -->
+        <RollingFile name="FileAppender"
+                     fileName="${FILE_PATH}/${FILE_NAME}.log"
+                     filePattern="${FILE_PATH}/${FILE_NAME}-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+
+        <!--
+        Example Abstracted Kafka Appender Configuration.
+        This demonstrates how to support integration with external systems like Kafka.
+        The actual `Kafka` tag and its properties would require the `log4j-kafka-appender` dependency.
+        <Kafka name="KafkaAppender" topic="app-logs">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level - %msg%n" />
+            <Property name="bootstrap.servers">kafka-broker1:9092,kafka-broker2:9092</Property>
+        </Kafka>
+        -->
+
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.omqs" level="info" additivity="false">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="FileAppender"/>
+            <!-- <AppenderRef ref="KafkaAppender"/> -->
+        </Logger>
+
+        <Root level="warn">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="FileAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>
+```
+```java
+// src/main/java/com/omqs/OfflineMessageQueueingServiceApplication_OMQS1.java
