@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+
+        <RollingFile name="RollingFile" fileName="logs/realtimemessaging-service.log"
+                     filePattern="logs/realtimemessaging-service-%d{yyyy-MM-dd}-%i.log.gz">
+            <!-- This is the JSON layout for structured logging -->
+            <JsonLayout complete="false" compact="true" eventEol="true">
+                <!-- Additional fields for context like Kafka topic or Event Hub name can be added here -->
+            </JsonLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+
+        <!-- Abstracted appender for external systems. Could be Kafka, Sockets, etc. -->
+        <!-- Example Kafka Appender (requires kafka-clients dependency) -->
+        <!--
+        <Kafka name="KafkaAppender" topic="chat-logs">
+            <PatternLayout pattern="%m" />
+            <Property name="bootstrap.servers">localhost:9092</Property>
+        </Kafka>
+        -->
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile"/>
+            <!-- <AppenderRef ref="KafkaAppender"/> -->
+        </Root>
+
+        <Logger name="com.example.realtimemessaging" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile"/>
+            <!-- <AppenderRef ref="KafkaAppender"/> -->
+        </Logger>
+    </Loggers>
+</Configuration>
+```
+src/main/java/com/example/realtimemessaging/RealtimeMessagingServiceApplication_CS1.java
+```java
